@@ -9,7 +9,7 @@ class Controller:
         self._choiceTeam = None
 
     def handleCreaGrafo(self, e):
-        self._model.buildGraph()
+        self._model.buildGraph(self._view._ddAnno.value)
         n, m = self._model.getGraphDetails()
 
         self._view._txt_result.controls.clear()
@@ -18,7 +18,20 @@ class Controller:
         self._view.update_page()
 
     def handleDettagli(self, e):
-        pass
+        if self._choiceTeam is None:
+            self._view._txt_result.controls.clear()
+            self._view._txt_result.controls.append(
+                ft.Text(f"Attenzione! Selezionare un team", color = "red"))
+            self._view.update_page()
+            return
+
+        vicini = self._model.getVicini(self._choiceTeam)
+        self._view._txt_result.controls.clear()
+        self._view._txt_result.controls.append(ft.Text(f"Il nodo {self._choiceTeam} ha {len(vicini)} vicini"))
+        self._view._txt_result.controls.append(ft.Text(f"Di seguito una lista ordinata di vicini:"))
+        for v in vicini:
+            self._view._txt_result.controls.append(ft.Text(f"{v[0]} - peso {v[1]}"))
+        self._view.update_page()
 
     def handlePercorso(self, e):
         pass
@@ -31,7 +44,7 @@ class Controller:
              # yearsDD.append(ft.dropdown.Option(y))
 
         yearsDD = list(map(lambda x: ft.dropdown.Option(x), years)) # importante mettere list(map(...))
-        # altrimenti non sarebbe permamente
+        # altrimenti non sarebbe permanente
         self._view._ddAnno.options = yearsDD
         self._view.update_page()
 
@@ -56,9 +69,9 @@ class Controller:
         self._view.update_page()
 
     def readDDTeams(self, e):
-        if e.controls.data is None:
+        if e.control.data is None:
             self._choiceTeam = None
         else:
-            self._choiceTeam = e.controls.data
+            self._choiceTeam = e.control.data
 
         print(f"Squadra selezionata: {self._choiceTeam}")

@@ -12,3 +12,5 @@ def main(page: ft.Page):
     my_view.load_interface()
 
 ft.app(target=main)
+
+# ci sono alcuni giocatori che hanno giocato in più squadre nello stesso anno
